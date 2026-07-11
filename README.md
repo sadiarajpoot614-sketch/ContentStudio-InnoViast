@@ -19,7 +19,7 @@ Marketers, founders, and social teams spend a disproportionate amount of time on
 - **Transparent prompting**: a "View prompt sent to the model" panel shows exactly what was sent — useful for learning prompt engineering, not just using the tool.
 - **Editable output**: the generated draft renders in an editable "proof sheet" — click in and revise directly, with a live word count.
 - **Export**: copy to clipboard, or download the draft as a `.md` file.
-- **Bring-your-own-key**: the app calls the OpenAI API directly from the browser using a key you paste in at runtime. Nothing is stored server-side, and the key never touches disk or git (see the Security Note below).
+- **Bring-your-own-key**: the app calls the Groq API directly from the browser using a key you paste in at runtime. Nothing is stored server-side, and the key never touches disk or git (see the Security Note below).
 
 ## 3. Tech Stack
 
@@ -27,7 +27,7 @@ Marketers, founders, and social teams spend a disproportionate amount of time on
 |---|---|
 | UI | React 18 + Vite |
 | Styling | Plain CSS (custom design system, no framework) |
-| AI API | OpenAI Chat Completions (`gpt-4o-mini`) — swappable for any Chat-Completions-compatible endpoint |
+| AI API | Groq API (`llama-3.3-70b-versatile`) — OpenAI-compatible Chat Completions endpoint |
 | Deployment | Vercel / Netlify (static SPA, no backend required) |
 
 ## 4. Project Structure
@@ -58,7 +58,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL Vite prints (typically `http://localhost:5173`). Paste an OpenAI API key into the field at the top of the control panel — get one at https://platform.openai.com/api-keys. The key lives only in that browser tab's memory for the session.
+Open the local URL Vite prints (typically `http://localhost:5173`). Paste a Groq API key into the field at the top of the control panel — get one at https://console.groq.com/keys. The key lives only in that browser tab's memory for the session.
 
 ### Build for production
 
@@ -81,8 +81,7 @@ npx vercel --prod
 
 ## 7. Security Note
 
-This project intentionally has no backend, so the OpenAI key is entered by the user at runtime and used directly from the browser. That is fine for a personal/demo tool but **is not how you'd ship this to real end users** — for production, a key should live server-side (a small serverless function) so it's never exposed to the client. This trade-off is documented here on purpose, as part of understanding the design, not as an oversight.
-
+This project intentionally has no backend, so the Groq API key is entered by the user at runtime and used directly from the browser.
 No API keys, `.env` files, or credentials are committed to this repository (see `.gitignore`).
 
 ## 8. Screenshots
