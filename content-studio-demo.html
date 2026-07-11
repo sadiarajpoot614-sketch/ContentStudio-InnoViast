@@ -1,0 +1,613 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --ink:#1c2b2d;
+    --ink-2:#243638;
+    --paper:#f5f1e8;
+    --paper-2:#ede6d6;
+    --brass:#b8863b;
+    --brass-2:#dba75c;
+    --moss:#5c7a5e;
+    --rust:#b5532c;
+    --ash:#8b9290;
+    --line: rgba(245,241,232,0.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  .cs-root{
+    font-family:'Inter', sans-serif;
+    background: var(--ink);
+    color: var(--paper);
+    min-height:100%;
+    padding: 28px;
+    border-radius: 10px;
+  }
+
+  .cs-header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+    gap:10px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:16px;
+  }
+  .cs-title{
+    font-family:'Fraunces', serif;
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:0.2px;
+    margin:0;
+  }
+  .cs-title span{ color: var(--brass-2); font-style:italic; }
+  .cs-subtitle{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color: var(--ash);
+    margin-top:4px;
+  }
+  .cs-issue{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color: var(--ash);
+    text-align:right;
+  }
+
+  .cs-grid{
+    display:grid;
+    grid-template-columns: 300px 1fr;
+    gap:0;
+    align-items:start;
+  }
+  @media (max-width: 760px){
+    .cs-grid{ grid-template-columns: 1fr; }
+    .cs-perf{ display:none; }
+  }
+
+  .cs-panel{ padding-right:22px; }
+
+  .cs-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    color: var(--brass-2);
+    display:block;
+    margin: 16px 0 7px;
+  }
+  .cs-label:first-child{ margin-top:0; }
+
+  .cs-tabs{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .cs-tab{
+    text-align:left;
+    background: transparent;
+    border:1px solid var(--line);
+    color: var(--paper);
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    padding:9px 12px;
+    border-radius:3px;
+    cursor:pointer;
+    transition: all .15s ease;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .cs-tab:hover{ border-color: var(--brass); }
+  .cs-tab.active{
+    background: var(--brass);
+    border-color: var(--brass);
+    color: var(--ink);
+    font-weight:600;
+  }
+  .cs-tab .cs-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9.5px;
+    opacity:0.65;
+  }
+
+  select.cs-input, input.cs-input, textarea.cs-input{
+    width:100%;
+    background: var(--ink-2);
+    border:1px solid var(--line);
+    color: var(--paper);
+    font-family:'Inter', sans-serif;
+    font-size:13.5px;
+    padding:9px 10px;
+    border-radius:3px;
+    outline:none;
+    transition: border-color .15s ease;
+  }
+  select.cs-input:focus, input.cs-input:focus, textarea.cs-input:focus{
+    border-color: var(--brass-2);
+  }
+  textarea.cs-input{ resize: vertical; min-height:64px; line-height:1.45; }
+
+  .cs-row2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+  .cs-generate{
+    margin-top:20px;
+    width:100%;
+    background: var(--brass);
+    color: var(--ink);
+    border:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:12.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:12px;
+    border-radius:3px;
+    cursor:pointer;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .cs-generate:hover{ background: var(--brass-2); }
+  .cs-generate:active{ transform: scale(0.98); }
+  .cs-generate:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  .cs-prompt-toggle{
+    margin-top:12px;
+    background:none;
+    border:none;
+    color: var(--ash);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-decoration: underline;
+    cursor:pointer;
+    padding:0;
+  }
+  .cs-prompt-toggle:hover{ color: var(--paper); }
+
+  .cs-prompt-view{
+    margin-top:8px;
+    background: var(--ink-2);
+    border:1px dashed var(--line);
+    border-radius:3px;
+    padding:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color: var(--ash);
+    white-space: pre-wrap;
+    line-height:1.5;
+    max-height:180px;
+    overflow-y:auto;
+  }
+
+  /* perforation divider */
+  .cs-perf{
+    position:relative;
+    width:1px;
+    align-self:stretch;
+    background-image: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 13px);
+    margin: 0 22px;
+  }
+  .cs-perf::before, .cs-perf::after{
+    content:'';
+    position:absolute;
+    left:50%; transform:translateX(-50%);
+    width:14px; height:14px;
+    background: var(--ink);
+    border:1px solid var(--line);
+    border-radius:50%;
+  }
+  .cs-perf::before{ top:-7px; }
+  .cs-perf::after{ bottom:-7px; }
+
+  .cs-output-wrap{ position:relative; }
+
+  .cs-stamp{
+    position:absolute;
+    top:14px; right:14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color: var(--rust);
+    border:2px solid var(--rust);
+    padding:4px 9px;
+    border-radius:4px;
+    transform: rotate(6deg);
+    opacity:0.85;
+    pointer-events:none;
+    z-index:2;
+    transition: all .2s ease;
+  }
+  .cs-stamp.ready{ color: var(--moss); border-color: var(--moss); }
+  .cs-stamp.working{ color: var(--brass-2); border-color: var(--brass-2); }
+
+  .cs-sheet{
+    background: var(--paper);
+    color: #2a2a26;
+    border-radius: 2px;
+    min-height: 360px;
+    position:relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+  }
+  .cs-sheet-tear{
+    height:10px;
+    background:
+      linear-gradient(135deg, transparent 8px, var(--paper) 8px) 0 0,
+      linear-gradient(-135deg, transparent 8px, var(--paper) 8px) 8px 0;
+    background-size: 16px 16px;
+    background-repeat: repeat-x;
+  }
+  .cs-sheet-body{ padding: 26px 26px 16px; }
+  .cs-sheet-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color: #8a8578;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:14px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .cs-sheet-content{
+    font-family:'Fraunces', serif;
+    font-size:15.5px;
+    line-height:1.7;
+    white-space:pre-wrap;
+    outline:none;
+    min-height:220px;
+  }
+  .cs-sheet-content:empty::before{
+    content: attr(data-placeholder);
+    color:#9a9584;
+    font-style:italic;
+  }
+  .cs-sheet-footer{
+    border-top:1px dashed #cfc7b3;
+    padding:12px 26px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .cs-wordcount{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:#7a7566;
+  }
+  .cs-actions{ display:flex; gap:8px; }
+  .cs-action-btn{
+    background: transparent;
+    border:1px solid #cfc7b3;
+    color:#4a463c;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.6px;
+    padding:6px 10px;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  .cs-action-btn:hover{ border-color:#4a463c; }
+
+  .cs-error{
+    margin-top:10px;
+    color: var(--rust);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    border:1px solid var(--rust);
+    padding:8px 10px;
+    border-radius:3px;
+    background: rgba(181,83,44,0.08);
+  }
+
+  .cs-hint{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color: var(--ash);
+    margin-top: 6px;
+    line-height:1.5;
+  }
+</style>
+
+<div id="cs-app" class="cs-root"></div>
+
+<script>
+(function(){
+
+  const TEMPLATES = {
+    blog: {
+      label: "Blog Post",
+      tag: "long-form",
+      brief: "topic",
+      placeholder: "e.g. Why remote teams struggle with async communication",
+      instructions: (t) => `Write a blog post about: ${t.topic}.
+Structure it with a compelling headline, a short hook opening, 3-4 clearly labeled subheadings covering distinct angles, and a closing takeaway. Use concrete examples over abstractions.`
+    },
+    caption: {
+      label: "Social Caption",
+      tag: "social",
+      brief: "post idea",
+      placeholder: "e.g. Behind-the-scenes photo of our team packing orders",
+      instructions: (t) => `Write a social media caption for: ${t.topic}.
+Open with a scroll-stopping first line. Keep it tight. Include a natural call-to-action and 3-5 relevant hashtags at the end, on their own line.`
+    },
+    ad: {
+      label: "Ad Copy",
+      tag: "conversion",
+      brief: "product / offer",
+      placeholder: "e.g. 20% off first order of our organic dog food",
+      instructions: (t) => `Write ad copy for: ${t.topic}.
+Provide a headline (under 8 words), one primary line of body copy that leads with the benefit not the feature, and a single clear call-to-action line. Make every word earn its place.`
+    },
+    email: {
+      label: "Email",
+      tag: "lifecycle",
+      brief: "purpose",
+      placeholder: "e.g. Re-engagement email for users who haven't logged in for 30 days",
+      instructions: (t) => `Write a marketing/lifecycle email for: ${t.topic}.
+Include a subject line, a short preview text line, a greeting, 2-3 short body paragraphs (or a scannable list if that fits better), and a single clear call-to-action button label. Label each part clearly.`
+    },
+    product: {
+      label: "Product Description",
+      tag: "ecommerce",
+      brief: "product",
+      placeholder: "e.g. Hand-thrown ceramic mug, holds 12oz, dishwasher safe",
+      instructions: (t) => `Write an ecommerce product description for: ${t.topic}.
+Lead with the single most persuasive benefit, follow with a short sensory or use-case paragraph, then a bullet list of 3-5 concrete specs/features. End with one line addressing a likely hesitation.`
+    },
+    linkedin: {
+      label: "LinkedIn Post",
+      tag: "professional",
+      brief: "idea / update",
+      placeholder: "e.g. Lesson learned from missing a product launch deadline",
+      instructions: (t) => `Write a LinkedIn post about: ${t.topic}.
+Open with a one-line hook that earns the click to 'see more'. Use short paragraphs (1-2 sentences each) with white space between them. Ground it in a specific, credible detail rather than generic advice. End with a genuine question or takeaway, not a hard sales pitch.`
+    }
+  };
+
+  const TONE_OPTIONS = ["Professional","Casual & friendly","Enthusiastic","Witty","Formal","Persuasive","Empathetic","Bold & direct"];
+  const LENGTH_OPTIONS = [
+    {v:"short", label:"Short", words:"60-120 words"},
+    {v:"medium", label:"Medium", words:"150-300 words"},
+    {v:"long", label:"Long", words:"350-600 words"}
+  ];
+  const FORMAT_OPTIONS = [
+    {v:"plain", label:"Plain paragraphs"},
+    {v:"markdown", label:"Markdown (headings/bold)"},
+    {v:"bullets", label:"Bullet-first"}
+  ];
+
+  let state = {
+    template: "blog",
+    tone: "Professional",
+    length: "medium",
+    audience: "",
+    format: "plain",
+    topic: "",
+    output: "",
+    generating: false,
+    error: "",
+    showPrompt: false,
+    lastPrompt: ""
+  };
+
+  const app = document.getElementById('cs-app');
+
+  function buildPrompt(){
+    const t = TEMPLATES[state.template];
+    const lengthObj = LENGTH_OPTIONS.find(l => l.v === state.length);
+    const formatObj = FORMAT_OPTIONS.find(f => f.v === state.format);
+
+    const system = `You are a senior copywriter and content strategist producing ready-to-publish drafts. Follow the brief exactly. Never include meta-commentary, explanations, or notes about what you did -- output only the finished content piece itself. Do not use generic filler phrases like "in today's fast-paced world."`;
+
+    const audienceLine = state.audience.trim()
+      ? `Write for this specific audience: ${state.audience.trim()}.`
+      : `Write for a general but engaged audience.`;
+
+    const formatLine = formatObj.v === "markdown"
+      ? "Format the output using Markdown (## for headings, ** for bold emphasis where useful)."
+      : formatObj.v === "bullets"
+        ? "Prefer scannable bullet points over dense paragraphs wherever the content allows it."
+        : "Use plain, well-spaced paragraphs -- no markdown symbols.";
+
+    const user = `${t.instructions({topic: state.topic || t.placeholder})}
+
+Tone: ${state.tone}.
+${audienceLine}
+Target length: ${lengthObj.words}.
+${formatLine}`;
+
+    return { system, user };
+  }
+
+  async function generate(){
+    if(state.generating) return;
+    state.error = "";
+    state.generating = true;
+    render();
+
+    const { system, user } = buildPrompt();
+    state.lastPrompt = `SYSTEM:\n${system}\n\nUSER:\n${user}`;
+
+    try{
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          system: system,
+          messages: [{ role: "user", content: user }]
+        })
+      });
+
+      if(!response.ok){
+        throw new Error("Request failed (" + response.status + ")");
+      }
+
+      const data = await response.json();
+      const text = (data.content || [])
+        .map(block => block.type === "text" ? block.text : "")
+        .filter(Boolean)
+        .join("\n");
+
+      state.output = text.trim();
+    }catch(err){
+      state.error = "Couldn't generate right now: " + err.message;
+    }finally{
+      state.generating = false;
+      render();
+    }
+  }
+
+  function wordCount(str){
+    const words = str.trim().split(/\s+/).filter(Boolean);
+    return words.length;
+  }
+
+  function copyOutput(){
+    const el = document.getElementById('cs-sheet-content');
+    if(!el) return;
+    navigator.clipboard.writeText(el.innerText).catch(()=>{});
+    const btn = document.getElementById('cs-copy-btn');
+    if(btn){
+      const original = btn.textContent;
+      btn.textContent = "Copied";
+      setTimeout(()=>{ btn.textContent = original; }, 1200);
+    }
+  }
+
+  function downloadOutput(){
+    const el = document.getElementById('cs-sheet-content');
+    if(!el) return;
+    const t = TEMPLATES[state.template];
+    const content = "# " + t.label + "\n\n" + el.innerText;
+    const blob = new Blob([content], {type: "text/markdown"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = t.label.toLowerCase().replace(/\s+/g,'-') + "-draft.md";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function render(){
+    const t = TEMPLATES[state.template];
+    const stampClass = state.generating ? "working" : (state.output ? "ready" : "");
+    const stampText = state.generating ? "Generating…" : (state.output ? "Ready" : "Draft");
+
+    app.innerHTML = `
+      <div class="cs-header">
+        <div>
+          <h1 class="cs-title">Content <span>Studio</span></h1>
+          <div class="cs-subtitle">AI Content Generation Studio</div>
+        </div>
+        <div class="cs-issue">TEMPLATE: ${t.label.toUpperCase()}<br/>FORMAT: ${state.format.toUpperCase()}</div>
+      </div>
+
+      <div class="cs-grid">
+        <div class="cs-panel">
+          <span class="cs-label">Template</span>
+          <div class="cs-tabs" id="cs-tabs">
+            ${Object.keys(TEMPLATES).map(key => `
+              <button class="cs-tab ${key === state.template ? 'active' : ''}" data-tpl="${key}">
+                ${TEMPLATES[key].label} <span class="cs-tag">${TEMPLATES[key].tag}</span>
+              </button>
+            `).join("")}
+          </div>
+
+          <span class="cs-label">${t.brief}</span>
+          <textarea class="cs-input" id="cs-topic" placeholder="${t.placeholder}">${state.topic}</textarea>
+
+          <span class="cs-label">Tone</span>
+          <select class="cs-input" id="cs-tone">
+            ${TONE_OPTIONS.map(opt => `<option ${opt === state.tone ? 'selected' : ''}>${opt}</option>`).join("")}
+          </select>
+
+          <div class="cs-row2">
+            <div>
+              <span class="cs-label">Length</span>
+              <select class="cs-input" id="cs-length">
+                ${LENGTH_OPTIONS.map(l => `<option value="${l.v}" ${l.v === state.length ? 'selected' : ''}>${l.label}</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <span class="cs-label">Format</span>
+              <select class="cs-input" id="cs-format">
+                ${FORMAT_OPTIONS.map(f => `<option value="${f.v}" ${f.v === state.format ? 'selected' : ''}>${f.label}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+
+          <span class="cs-label">Audience (optional)</span>
+          <input class="cs-input" id="cs-audience" placeholder="e.g. busy new parents" value="${state.audience}"/>
+
+          <button class="cs-generate" id="cs-generate" ${state.generating ? 'disabled' : ''}>
+            ${state.generating ? 'Generating…' : 'Generate draft'}
+          </button>
+
+          ${state.error ? `<div class="cs-error">${state.error}</div>` : ""}
+
+          <button class="cs-prompt-toggle" id="cs-prompt-toggle">${state.showPrompt ? 'Hide' : 'View'} prompt sent to the model</button>
+          ${state.showPrompt ? `<div class="cs-prompt-view">${state.lastPrompt ? state.lastPrompt.replace(/</g,'&lt;') : 'Generate a draft first to see the constructed prompt.'}</div>` : ""}
+
+          <div class="cs-hint">Output is editable — click into the sheet and revise directly.</div>
+        </div>
+
+        <div class="cs-perf"></div>
+
+        <div class="cs-output-wrap">
+          <div class="cs-stamp ${stampClass}">${stampText}</div>
+          <div class="cs-sheet">
+            <div class="cs-sheet-tear"></div>
+            <div class="cs-sheet-body">
+              <div class="cs-sheet-meta">
+                <span>${t.label}</span>
+                <span>Tone: ${state.tone}</span>
+                <span>${new Date().toLocaleDateString()}</span>
+              </div>
+              <div class="cs-sheet-content" id="cs-sheet-content" contenteditable="true" data-placeholder="Your generated draft will appear here. Fill in the brief and hit Generate.">${state.output.replace(/</g,'&lt;')}</div>
+            </div>
+            <div class="cs-sheet-footer">
+              <span class="cs-wordcount" id="cs-wordcount">${state.output ? wordCount(state.output) + ' words' : '0 words'}</span>
+              <div class="cs-actions">
+                <button class="cs-action-btn" id="cs-copy-btn">Copy</button>
+                <button class="cs-action-btn" id="cs-download-btn">Download .md</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll('.cs-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.template = btn.getAttribute('data-tpl');
+        state.topic = "";
+        render();
+      });
+    });
+    document.getElementById('cs-topic').addEventListener('input', (e) => { state.topic = e.target.value; });
+    document.getElementById('cs-tone').addEventListener('change', (e) => { state.tone = e.target.value; });
+    document.getElementById('cs-length').addEventListener('change', (e) => { state.length = e.target.value; });
+    document.getElementById('cs-format').addEventListener('change', (e) => { state.format = e.target.value; });
+    document.getElementById('cs-audience').addEventListener('input', (e) => { state.audience = e.target.value; });
+    document.getElementById('cs-generate').addEventListener('click', generate);
+    document.getElementById('cs-prompt-toggle').addEventListener('click', () => { state.showPrompt = !state.showPrompt; render(); });
+    document.getElementById('cs-copy-btn').addEventListener('click', copyOutput);
+    document.getElementById('cs-download-btn').addEventListener('click', downloadOutput);
+
+    const contentEl = document.getElementById('cs-sheet-content');
+    contentEl.addEventListener('input', () => {
+      document.getElementById('cs-wordcount').textContent = wordCount(contentEl.innerText) + ' words';
+    });
+  }
+
+  render();
+})();
+</script>
