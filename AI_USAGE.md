@@ -6,6 +6,7 @@ This document records where and how AI tools were used while building Content St
 
 - **ChatGPT (OpenAI)** — used for project planning, debugging, code improvements, UI suggestions, and documentation.
 - **Groq API (Llama 3.3 70B Versatile)** — used as the AI model for generating content inside the application.
+- 
 ## What AI Was Used For
 
 1. **Scaffolding the project structure** — initial Vite + React file layout (`App.jsx`, `templates.js`, `App.css`), so time could go into the prompt design and UI polish rather than boilerplate.
