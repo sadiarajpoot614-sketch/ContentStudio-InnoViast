@@ -81,7 +81,7 @@ npx vercel --prod
 
 ## 7. Security Note
 
-This project intentionally has no backend, so the Groq API key is entered by the user at runtime and used directly from the browser. This approach is suitable for a demo project but not recommended for production applications. In production, API keys should be stored securely on a backend server.
+This project intentionally has no backend, so the Groq API key is entered by the user at runtime and used directly from the browser. This approach is suitable for a demo project but is **not recommended for production applications**. In a production environment, API keys should be stored securely on a backend server.
 
 No API keys, `.env` files, or credentials are committed to this repository (see `.gitignore`).
 
